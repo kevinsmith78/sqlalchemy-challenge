@@ -16,6 +16,7 @@ Base.prepare(engine,reflect=True)
 
 Measurement=Base.classes.measurement
 Station=Base.classes.station
+session=Session(engine)
 
 #Flask Setup
 app=Flask (_name_)
@@ -29,6 +30,9 @@ def welcome()
         f"Precipitation:/api/v1.0/precipitation"
         f"List of stations:/api/v1.0/stations"
         f"Temperature:/api/v1.0/stations"
+        f"Observations:/api/v1.0/tobs"
+        f"Dates:/api/v1.0/<start>/<end>"
     )
-    
+@app.route ("/api/v1.0/precipitation") 
+def precipitation():    
     app.run(debug=True)
