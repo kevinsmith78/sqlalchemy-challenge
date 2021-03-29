@@ -1,3 +1,6 @@
-from flask import Flask
+from flask import Flask, jsonify
 
-app = Flask(_climate_)
+
+app = Flask(_name_)
+
+
