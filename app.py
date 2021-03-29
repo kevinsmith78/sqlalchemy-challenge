@@ -19,7 +19,7 @@ Station=Base.classes.station
 session=Session(engine)
 
 #Flask Setup
-app=Flask (_name_)
+app = Flask (__name__)
 
 #Flask Routes
 @app.route("/")
@@ -35,4 +35,7 @@ def welcome():
     )
 @app.route ("/api/v1.0/precipitation") 
 def precipitation():    
+    
+    
+    if __name__ == '__main__':
     app.run(debug=True)
