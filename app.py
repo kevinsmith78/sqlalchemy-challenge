@@ -23,7 +23,7 @@ app=Flask (_name_)
 
 #Flask Routes
 @app.route("/")
-def welcome()
+def welcome():
     """List all available api routes."""
     return (
         f"Available Routes:"
