@@ -27,5 +27,10 @@ def welcome()
     return (
         f"Available Routes:"
         f"Precipitation:/api/v1.0/precipitation"
-        f"List of stations:/api/v1.0/stations "
+        f"List of stations:/api/v1.0/stations"
     )
+
+
+
+
+    app.run(debug=True)
