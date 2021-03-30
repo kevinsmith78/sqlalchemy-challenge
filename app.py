@@ -49,11 +49,29 @@ def precipitation():
         precp_data.append(data)
     return jsonify(precp_data)
 
-
 @app.route("/api/v1.0/stations")
+def stations():
 #Return a JSON list of stations from the dataset.
-
+    session = Session(engine)
+    
+    stations=session.query(Station.station).all()
+    
+    return jsonify(stations)
 @app.route("Observations:/api/v1.0/tobs")
+def tobs():
+    tobs_product = session.query(Measurement.station).\
+    filter(Measurement.date.between('2016-08-23','2017-08-23')).all()
+        observ = []
+        for i in tobs_product   
+        dict = {}
+        dict["station"]=tobs[0]
+        dict["tobs"]=float(tobs[1])
+        list.append(dict)
+    return jsonify(list)
+
+
+
+
 #Query the dates and temperature observations of the most active station for the last year of data.
 
 
