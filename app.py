@@ -36,15 +36,15 @@ def welcome():
 def precipitation(): 
 #Convert the query results to a dictionary using date as the key and prcp as the value.
     last=dt.date(2017,8,23)-dt.timedelta(days=365)
-    last_d=session.query(Measurement.date).order_by(Measurment.date.desc()).first()
-    precp=session.query(Measurement.date,Measurement.date).all()
-    filter(Measurement.date > last).order_by(Measurement.date).all()
+    last_d=session.query(Measurement.date).order_by(Measurement.date.desc()).first()
+    precp=session.query(Measurement.date,Measurement.date).all().\
+        filter(Measurement.date > last).order_by(Measurement.date).all()
 
 #Return the JSON representation of your dictionary.
     precp_data = []
-    for i in precepitation:
+    for i in precp:
         data={}
-        data['date'] = precepitation[0]
+        data['date'] = precipitation[0]
         data['prcp'] = precipitation[1]
         precp_data.append(data)
     return jsonify(precp_data)
@@ -65,7 +65,7 @@ def tobs():
     filter(Measurement.date.between('2016-08-23','2017-08-23')).all()\
         
     observ = []
-    for i in tobs:   
+    for i in tobs_product:   
         dict = {}
         dict["station"]=tobs[0]
         dict["tobs"]=float(tobs[1])
@@ -77,15 +77,15 @@ def tobs():
 #Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
 def starts():
     session=Session(engine)
-    queryr=session.query (func.min(Measurement.tobs), func.avg(Measurment.tobs), func.max(Measurement.tobs)).\
-        filter(Measurement.date>=start).filter(Measurment.date <=end).all()
+    queryr=session.query (func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+        filter(Measurement.date>=start).filter(Measurement.date <=end).all()
     given=[]
     for min,avg,max in queryr: 
         tobs_dict = {}
         tobs_dict["Min"] = min
-        tobs_dict["Average"] = average
+        tobs_dict["Average"] = avg
         tobs_dict["Max"] = max
-        tobsall.append(given) 
+        given.append(tobs_dict) 
 #Return a JSON   
     return jsonify(given)
 
@@ -96,38 +96,37 @@ def starts():
 def start():
     session = Session(engine)
     query_r = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs))   
-    filter(Measurement.date >=start).all
+    filter(Measurement.date >=start).all()
     session.close()
 
     obsercom=[]
     for min,avg,max in query_r: 
         tobs_dict = {}
         tobs_dict["Min"] = min
-        tobs_dict["Average"] = average
+        tobs_dict["Average"] = avg
         tobs_dict["Max"] = max
-        tobsall.append(obsercom)
+        obsercom.append(tobs_dict)
 
     return jsonify(obsercom)
 
 #When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
-def start():
+@app.route ("/api/v1.0/<start>/<end>")
+def start_1():
     session = Session(engine)
-    query_r = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs))   
-    filter(Measurement.date >=start).filter(Measurement.date<=stop).all()
+    query_rain = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs))   
+    filter(Measurement.date >=start).filter(Measurement.date<=end).all()
     session.close()
 
     inclusive=[]
-    for min,avg,max in query_r: 
+    for min,avg,max in query_rain: 
         tobs_dict = {}
-        tobs_dict["Date"] = date
+        tobs_dict["date"] = date
         tobs_dict["Min"] = min
-        tobs_dict["Average"] = average
+        tobs_dict["Average"] = avg
         tobs_dict["Max"] = max
-        tobsall.append(inclusive)
+        inclusive.append(tobs_dict)
 
-    return jsonify(obsercom)
-
-    pass   
+    return jsonify(inclusive) 
     
 if __name__ == '__main__':
     app.run(debug=True)
