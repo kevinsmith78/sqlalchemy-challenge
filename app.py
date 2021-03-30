@@ -61,57 +61,69 @@ def stations():
 #Query the dates and temperature observations of the most active station for the last year of data.
 @app.route("Observations:/api/v1.0/tobs")
 def tobs():
-tobs_product = session.query(Measurement.station).\
-    filter(Measurement.date.between('2017')).all()
-        observ = []
-        for i in tobs_product   
+    tobs_product = session.query(Measurement.station).\
+    filter(Measurement.date.between('2016-08-23','2017-08-23')).all()\
+        
+    observ = []
+    for i in tobs:   
         dict = {}
         dict["station"]=tobs[0]
         dict["tobs"]=float(tobs[1])
-        list.append(dict)
+        list.append(observ)
  #Return a JSON list of temperature observations (TOBS) for the previous year.  
-    return jsonify(list)
+    return jsonify(observ)
 
 @app.route ("/api/v1.0/<start>/<end>")
 #Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
-def starts()
+def starts():
     session=Session(engine)
     queryr=session.query (func.min(Measurement.tobs), func.avg(Measurment.tobs), func.max(Measurement.tobs)).\
         filter(Measurement.date>=start).filter(Measurment.date <=end).all()
+    given=[]
+    for min,avg,max in queryr: 
+        tobs_dict = {}
+        tobs_dict["Min"] = min
+        tobs_dict["Average"] = average
+        tobs_dict["Max"] = max
+        tobsall.append(given) 
+#Return a JSON   
+    return jsonify(given)
+
+
 
 #When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
 @app.route ("/api/v1.0/<start>")
 def start():
     session = Session(engine)
-    query_r = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\   
-        filter(Measurement.date >=start).filter(Measurement.date<=stop).all()
-        session.close()
+    query_r = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs))   
+    filter(Measurement.date >=start).all
+    session.close()
 
     obsercom=[]
-    for min,avg,max in query_r 
-    tobs_dict = {}
-    tobs_dict["Min"] = min
-    tobs_dict["Average"] = average
-    tobs_dict["Max"] = max
-    tobsall.append(tobs_dict)
+    for min,avg,max in query_r: 
+        tobs_dict = {}
+        tobs_dict["Min"] = min
+        tobs_dict["Average"] = average
+        tobs_dict["Max"] = max
+        tobsall.append(obsercom)
 
     return jsonify(obsercom)
 
 #When given the start and the end date, calculate the TMIN, TAVG, and TMAX for dates between the start and end date inclusive.
 def start():
     session = Session(engine)
-    query_r = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\   
-        filter(Measurement.date >=start).filter(Measurement.date<=stop).all()
-        session.close()
+    query_r = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs))   
+    filter(Measurement.date >=start).filter(Measurement.date<=stop).all()
+    session.close()
 
-    obsercom=[]
-    for min,avg,max in query_r 
-    tobs_dict = {}
-    tobs_dict["Date"] = date
-    tobs_dict["Min"] = min
-    tobs_dict["Average"] = average
-    tobs_dict["Max"] = max
-    tobsall.append(tobs_dict)
+    inclusive=[]
+    for min,avg,max in query_r: 
+        tobs_dict = {}
+        tobs_dict["Date"] = date
+        tobs_dict["Min"] = min
+        tobs_dict["Average"] = average
+        tobs_dict["Max"] = max
+        tobsall.append(inclusive)
 
     return jsonify(obsercom)
 
