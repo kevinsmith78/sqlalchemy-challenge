@@ -62,7 +62,7 @@ def stations():
 @app.route("Observations:/api/v1.0/tobs")
 def tobs():
 tobs_product = session.query(Measurement.station).\
-    filter(Measurement.date.between('2016-08-23','2017-08-23')).all()
+    filter(Measurement.date.between('2017')).all()
         observ = []
         for i in tobs_product   
         dict = {}
@@ -84,7 +84,7 @@ def starts()
 def start():
     session = Session(engine)
     query_r = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\   
-        filter(Measurement.date >=start).all()
+        filter(Measurement.date >=start).filter(Measurement.date<=stop).all()
         session.close()
 
     obsercom=[]
@@ -101,12 +101,13 @@ def start():
 def start():
     session = Session(engine)
     query_r = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\   
-        filter(Measurement.date >=start).all()
+        filter(Measurement.date >=start).filter(Measurement.date<=stop).all()
         session.close()
 
     obsercom=[]
     for min,avg,max in query_r 
     tobs_dict = {}
+    tobs_dict["Date"] = date
     tobs_dict["Min"] = min
     tobs_dict["Average"] = average
     tobs_dict["Max"] = max
