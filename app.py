@@ -59,7 +59,7 @@ def stations():
     return jsonify(stations)
 
 #Query the dates and temperature observations of the most active station for the last year of data.
-@app.route("Observations:/api/v1.0/tobs")
+@app.route("a/api/v1.0/tobs")
 def tobs():
     tobs_product = session.query(Measurement.station).\
     filter(Measurement.date.between('2016-08-23','2017-08-23')).all()\
@@ -78,7 +78,7 @@ def tobs():
 def starts():
     session=Session(engine)
     queryr=session.query (func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(Measurement.date>=start).filter(Measurement.date <=end).all()
+        filter(Measurement.date>=start)
     given=[]
     for min,avg,max in queryr: 
         tobs_dict = {}
@@ -114,8 +114,8 @@ def start():
 def start_1():
     session = Session(engine)
     query_rain = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs))   
-    filter(Measurement.date >=start).filter(Measurement.date<=end).all()
-    session.close()
+    filter(Measurement.date >=start)
+    
 
     inclusive=[]
     for min,avg,max in query_rain: 
