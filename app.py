@@ -35,10 +35,19 @@ def welcome():
 @app.route ("/api/v1.0/precipitation") 
 def precipitation(): 
 #Convert the query results to a dictionary using date as the key and prcp as the value.
-    last_yr=dt.date()    
-
+    last=dt.date(2017,8,23)-dt.timedelta(days=365)
+    last_d=session.query(Measurement.date).order_by(Measurment.date.desc()).first()
+    precp=session.query(Measurement.date,Measurement.date).all()
+    filter(Measurement.date > last).order_by(Measurement.date).all()
 
 #Return the JSON representation of your dictionary.
+    precp_data = []
+    for i in precepitation:
+        data={}
+        data['date'] = precepitation[0]
+        data['prcp'] = precipitation[1]
+        precp_data.append(data)
+    return jsonify(precp_data)
 
 
 @app.route("/api/v1.0/stations")
