@@ -35,6 +35,7 @@ def welcome():
 @app.route ("/api/v1.0/precipitation") 
 def precipitation(): 
 #Convert the query results to a dictionary using date as the key and prcp as the value.
+    last_yr=dt.date()    
 
 
 #Return the JSON representation of your dictionary.
