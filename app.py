@@ -7,8 +7,6 @@ from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
 import datetime as dt
 
-
-
 #Set up the engine
 engine=create_engine("sqlite:///Resources/hawaii.sqlite")
 Base = automap_base()
@@ -26,31 +24,34 @@ app = Flask (__name__)
 def welcome():
     """List all available api routes."""
     return (
-        f"Available Routes:"
-        f"Precipitation:/api/v1.0/precipitation"
-        f"List of stations:/api/v1.0/stations"
-        f"Observations:/api/v1.0/tobs"
-        f"Dates:/api/v1.0/<start>/<end>"
+        f"Available Routes:<br>"
+        f"Precipitation:/api/v1.0/precipitation<br>"
+        f"List of stations:/api/v1.0/stations<br>"
+        f"Observations:/api/v1.0/tobs<br>"
+        f"Dates:/api/v1.0/<start>/<br><end>"
     )
 @app.route ("/api/v1.0/precipitation") 
 def precipitation(): 
+    session=Session(engine)
 #Convert the query results to a dictionary using date as the key and prcp as the value.
     last=dt.date(2017,8,23)-dt.timedelta(days=365)
-    last_d=session.query(Measurement.date).order_by(Measurement.date.desc()).first()
-    precp=session.query(Measurement.date,Measurement.date).all().\
-        filter(Measurement.date > last).order_by(Measurement.date).all()
-
+    #last_d=session.query(Measurement.date).order_by(Measurement.date.desc()).first()
+    precp=session.query(Measurement.date,Measurement.prcp).filter(Measurement.date > last).order_by(Measurement.date).all()
+    session.close()
+    print(precp)
 #Return the JSON representation of your dictionary.
     precp_data = []
     for i in precp:
+        #print(i[0])
         data={}
-        data['date'] = precipitation[0]
-        data['prcp'] = precipitation[1]
+        data['date'] = i[0]
+        data['prcp'] = i[1]
         precp_data.append(data)
     return jsonify(precp_data)
 
 @app.route("/api/v1.0/stations")
 def stations():
+
 #Return a JSON list of stations from the dataset.
     session = Session(engine)
     
@@ -59,10 +60,9 @@ def stations():
     return jsonify(stations)
 
 #Query the dates and temperature observations of the most active station for the last year of data.
-@app.route("a/api/v1.0/tobs")
+@app.route("/api/v1.0/tobs")
 def tobs():
-    tobs_product = session.query(Measurement.station).\
-    filter(Measurement.date.between('2016-08-23','2017-08-23')).all()\
+    tobs_product = session.query(Measurement.station).filter(Measurement.date.between('2016-08-23','2017-08-23')).all()
         
     observ = []
     for i in tobs_product:   
@@ -77,8 +77,7 @@ def tobs():
 #Return a JSON list of the minimum temperature, the average temperature, and the max temperature for a given start or start-end range.
 def starts():
     session=Session(engine)
-    queryr=session.query (func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
-        filter(Measurement.date>=start)
+    queryr=session.query (func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).filter(Measurement.date>=start)
     given=[]
     for min,avg,max in queryr: 
         tobs_dict = {}
@@ -88,8 +87,6 @@ def starts():
         given.append(tobs_dict) 
 #Return a JSON   
     return jsonify(given)
-
-
 
 #When given the start only, calculate TMIN, TAVG, and TMAX for all dates greater than and equal to the start date.
 @app.route ("/api/v1.0/<start>")
